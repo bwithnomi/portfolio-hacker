@@ -1,26 +1,313 @@
 @import "tailwindcss";
 
+@layer base {
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --matrix-green: #00ff41;
+    --matrix-green-dim: #00cc33;
+    --matrix-green-bright: #33ff66;
+    --cyan-accent: #00ffff;
+    --red-accent: #ff0000;
+    --text-primary: #00ff41;
+    --text-secondary: #00cc33;
+    --text-dim: #008822;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  * {
+    border-color: rgba(0, 255, 65, 0.2);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: #000000;
+    color: #00ff41;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    color: #00ff41;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Terminal window effect */
+  .terminal-window {
+    background-color: rgba(0, 0, 0, 0.95);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2), inset 0 0 20px rgba(0, 255, 65, 0.05);
+  }
+
+  .terminal-prompt {
+    color: #00ff41;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .terminal-prompt::before {
+    content: '> ';
+    color: #00ff41;
+  }
+
+  .terminal-output {
+    color: #00cc33;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .terminal-error {
+    color: #ff0000;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Matrix glow effects */
+  .glow-matrix {
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5),
+                0 0 40px rgba(0, 255, 65, 0.3),
+                0 0 60px rgba(0, 255, 65, 0.1);
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5),
+                0 0 40px rgba(0, 255, 255, 0.3),
+                0 0 60px rgba(0, 255, 255, 0.1);
+  }
+
+  /* Terminal borders */
+  .border-matrix {
+    border: 1px solid #00ff41;
+  }
+
+  .border-cyan {
+    border: 1px solid #00ffff;
+  }
+
+  /* Terminal scanline effect */
+  .terminal-scanline {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .terminal-scanline::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 255, 65, 0.05) 50%
+    );
+    background-size: 100% 2px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .terminal-scanline::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 65, 0.1) 50%,
+      transparent 100%
+    );
+    animation: scanline-move-terminal 6s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  @keyframes scanline-move-terminal {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  /* Terminal cursor blink */
+  .terminal-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.2em;
+    background-color: #00ff41;
+    animation: cursor-blink 1s infinite;
+    margin-left: 2px;
+    vertical-align: middle;
+  }
+
+  @keyframes cursor-blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  /* Terminal grid overlay */
+  .terminal-grid {
+    background-image: 
+      linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Terminal glitch text effect */
+  .terminal-glitch {
+    position: relative;
+    display: inline-block;
+  }
+
+  .terminal-glitch::before,
+  .terminal-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .terminal-glitch::before {
+    left: 1px;
+    text-shadow: -1px 0 #00ff41;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: terminal-glitch-anim 3s infinite linear alternate-reverse;
+  }
+
+  .terminal-glitch::after {
+    left: -1px;
+    text-shadow: 1px 0 #00cc33;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: terminal-glitch-anim 2s infinite linear alternate-reverse;
+  }
+
+  @keyframes terminal-glitch-anim {
+    0% {
+      clip: rect(61px, 9999px, 91px, 0);
+    }
+    20% {
+      clip: rect(35px, 9999px, 78px, 0);
+    }
+    40% {
+      clip: rect(23px, 9999px, 56px, 0);
+    }
+    60% {
+      clip: rect(89px, 9999px, 12px, 0);
+    }
+    80% {
+      clip: rect(45px, 9999px, 67px, 0);
+    }
+    100% {
+      clip: rect(72px, 9999px, 34px, 0);
+    }
+  }
+
+  /* Terminal command button */
+  .terminal-button {
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    background-color: transparent;
+    border: 1px solid #00ff41;
+    color: #00ff41;
+    transition: all 0.3s;
+    text-transform: none;
+  }
+
+  .terminal-button::before {
+    content: '> ';
+    margin-right: 4px;
+  }
+
+  .terminal-button:hover {
+    background-color: rgba(0, 255, 65, 0.1);
+    color: #00ff41;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5),
+                inset 0 0 20px rgba(0, 255, 65, 0.1);
+  }
+
+  .terminal-button:active {
+    background-color: rgba(0, 255, 65, 0.2);
+  }
+
+  /* Terminal scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #000000;
+    border-left: 1px solid rgba(0, 255, 65, 0.2);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #00ff41;
+    border-radius: 0;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00cc33;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  }
+}
+
+@layer utilities {
+  .text-matrix {
+    color: #00ff41;
+  }
+
+  .text-matrix-dim {
+    color: #00cc33;
+  }
+
+  .text-matrix-bright {
+    color: #33ff66;
+  }
+
+  .text-cyan {
+    color: #00ffff;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  .animate-glow {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow linear infinite;
+  }
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
